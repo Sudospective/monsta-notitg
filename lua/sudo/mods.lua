@@ -6,33 +6,30 @@ return Def.ActorFrame {
 		
 		local function give_monsta_bass(beat)
 			func {beat + 0.25, 1, outExpo, -3, 0, function(p)
+				Give:zoom(0.25)
 				Give:x(sw * p)
 			end}
-			func {beat + 0.25, 3, inExpo, 0.25, 0, function(p)
-				Give:zoom(p)
-			end}
 			func {beat + 0.75, 1, outExpo, 3, 0, function(p)
+				Me:zoom(0.25)
 				Me:x(sw * p)
 			end}
-			func {beat + 0.75, 3, inExpo, 0.25, 0, function(p)
-				Me:zoom(p)
-			end}
 			func {beat + 1.25, 1, outExpo, -3, 0, function(p)
+				That:zoom(0.25)
 				That:x(sw * p)
 			end}
-			func {beat + 1.25, 3, inExpo, 0.25, 0, function(p)
-				That:zoom(p)
-			end}
 			func {beat + 1.75, 1, outExpo, 3, 0, function(p)
+				Monsta:zoom(0.25)
 				Monsta:x(sw * p)
 			end}
-			func {beat + 1.75, 3, inExpo, 0.25, 0, function(p)
-				Monsta:zoom(p)
-			end}
 			func {beat + 2.5, 1, outExpo, -3, 0, function(p)
+				Bass:zoom(0.25)
 				Bass:x(sw * p)
 			end}
-			func {beat + 2.5, 3, inExpo, 0.25, 0, function(p)
+			func {beat + 3, 1, inExpo, 0.25, 0, function(p)
+				Give:zoom(p)
+				Me:zoom(p)
+				That:zoom(p)
+				Monsta:zoom(p)
 				Bass:zoom(p)
 			end}
 		end
@@ -444,6 +441,23 @@ return Def.ActorFrame {
 				v:stopeffect()
 			end
 		end}
+		
+		for beat = 176, 204, 2 do
+			func {beat, 1, flip(outCirc), function(p)
+				Give:x((50 * p))
+				Me:x((-50 * p))
+				That:x((50 * p))
+				Monsta:x((-50 * p))
+				Bass:x((50 * p))
+			end}
+			func {beat + 1, 1, flip(outCirc), function(p)
+				Give:x((-50 * p))
+				Me:x((50 * p))
+				That:x((-50 * p))
+				Monsta:x((50 * p))
+				Bass:x((-50 * p))
+			end}
+		end
 
 		give_monsta_bass(180)
 		give_monsta_bass(196)
