@@ -2,10 +2,11 @@ xero()
 
 return Def.ActorFrame {
     LoadCommand = function(self)
-
         for pn = 1, 2 do
             setupJudgeProxy(PJ[pn], P[pn]:GetChild('Judgment'), pn)
             setupJudgeProxy(PC[pn], P[pn]:GetChild('Combo'), pn)
+			PJ[pn]:zoom(0.75)
+			PC[pn]:zoom(0.75)
         end
         for pn = 1, #PP do
             PP[pn]:SetTarget(P[pn])
@@ -92,6 +93,20 @@ return Def.ActorFrame {
 				ScreenPos:y(scy + y)
 			end
 		}
+		definemod {
+			'realx', 'realy',
+			function(x, y, pn)
+				local px, py
+				if pn == 1 then
+					px = scx * 0.5
+				else 
+					px = scx * 1.5
+				end
+				py = scy
+				P[pn]:x(px + (x * 0.64 * (sw / 640)))
+				P[pn]:y(py + (y * 0.64 * (sw / 640)))
+			end
+		}
 
 		setdefault {
 			2.5, 'xmod',
@@ -106,7 +121,9 @@ return Def.ActorFrame {
 			0, 'screenroty',
 			0, 'screenrotz',
 			0, 'screenposx',
-			0, 'screenposy'
+			0, 'screenposy',
+			0, 'realx',
+			0, 'realy',
 		}
 
 		rand.seed(411)
