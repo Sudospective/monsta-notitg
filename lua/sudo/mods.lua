@@ -119,6 +119,25 @@ return Def.ActorFrame {
 				amp = scy
 			end
 			ease {beat - 0.5, 1, function(x) return inverse(inOutCirc(x)) end, amp, mod}
+			if FUCK_EXE and window_mods then
+				if dir == 'left' then
+					func {beat - 0.5, 1, function(x) return inverse(inOutCirc(x)) end, function(p)
+						DISPLAY:SetWindowPosition(-6000 * p, 12)
+					end}
+				elseif dir == 'right' then
+					func {beat - 0.5, 1, function(x) return inverse(inOutCirc(x)) end, function(p)
+						DISPLAY:SetWindowPosition(6000 * p, 12)
+					end}
+				elseif dir == 'up' then
+					func {beat - 0.5, 1, function(x) return inverse(inOutCirc(x)) end, function(p)
+						DISPLAY:SetWindowPosition(0, 12 - 6000 * p)
+					end}
+				elseif dir == 'down' then
+					func {beat - 0.5, 1, function(x) return inverse(inOutCirc(x)) end, function(p)
+						DISPLAY:SetWindowPosition(0, 12 + 6000 * p)
+					end}
+				end
+			end
 		end
 	
 		func {0, function()
@@ -385,17 +404,15 @@ return Def.ActorFrame {
 
 		kick_up(126)
 
-		for pn = 1, #PP do
-			func {128, function()
-				P[pn]:vibrate()
-			end}
-			func {128, 2, outCirc, 1, 0, function(p)
-				P[pn]:effectmagnitude(200 * p, 0, 0)
-			end}
-			func {130, function()
-				P[pn]:stopeffect()
-			end}
-		end
+		func {128, function()
+			ScreenPos:vibrate()
+		end}
+		func {128, 2, outCirc, 1, 0, function(p)
+			ScreenPos:effectmagnitude(250 * p, 0, 0)
+		end}
+		func {130, function()
+			ScreenPos:stopeffect()
+		end}
 		
 		ease {126.75, 0.5, inOutCirc, 1, 'xmod', -50, 'tiny'}
 		ease {127.25, 0.5, inOutExpo, 100, 'tiny', 100, 'flip', -75, 'tornado'}
@@ -407,18 +424,27 @@ return Def.ActorFrame {
 		set {128, -400, 'tiny', -25, 'reverse'}
 		ease {128, 2, inOutBack, -90 * math.pi/1.8, 'confusionoffset1'}
 		ease {128, 2, inQuad, 50, 'reverse'}
-		ease {128, 2, flip(linear), 1000, 'xmod', -1500, 'tiny', 400, 'zoomz', -500, 'tipsy', 500, 'bumpyx', -30, 'rotationx', 20, 'rotationy', 10, 'rotationz'}
+		ease {128, 2, outCirc, -200, 'holdgirth', 100, 'holdstealth'}
+		ease {128, 2, flip(outExpo), 100, 'hidden'}
+		ease {128, 2, flip(linear), 1000, 'xmod', -1500, 'tiny', 400, 'zoomz', -500, 'tipsy', -30, 'rotationx', 20, 'rotationy', 10, 'rotationz'}
 		set {129, 0, 'boomerang'}
 		ease {129, 1, inExpo, 5, 'xmod', 50, 'flip', 150, 'wave', 200, 'sudden', -400, 'tiny', 100, 'dark'}
-		set {130, 100, 'boomerang', 0, 'confusionoffset1'}
+		set {130, 100, 'boomerang', 0, 'confusionoffset1', 0, 'bumpyx'}
 		
 		set {133, 0, 'boomerang'}
-		ease {133, 0.5, outExpo, 2.5, 'xmod', 0, 'flip', 360, 'targetrotz', 0, 'reverse', 0, 'wave', 0, 'sudden', 0, 'tiny', 0, 'dark', 0, 'longholds'}
+		ease {133, 0.5, outExpo, 2.5, 'xmod', 0, 'flip', 360, 'targetrotz', 0, 'reverse', 0, 'wave', 0, 'sudden', 0, 'tiny', 0, 'dark', 0, 'longholds', 0, 'holdgirth', 0, 'holdstealth'}
 		
 		set {136, 100, 'euler'}
 
 		local k = -1
-		local amp = 10
+		local amp = 2000
+		for beat = 128, 129.8755, 0.125 do
+			k = -k
+			amp = amp  * 0.5
+			set {beat, k * amp, 'bumpyx'}
+		end
+		k = -1
+		amp = 10
 		for beat = 136, 141.5, 0.5 do
 			k = -k
 			amp = amp + 10
@@ -692,30 +718,48 @@ return Def.ActorFrame {
 
 		
 		if FUCK_EXE and window_mods then
+			local k = -1
 			local w, h = DISPLAY:GetWindowWidth(), DISPLAY:GetWindowHeight()
-			func {110, 0.5, outBack, 1, 1.5, function(p)
+			func {110, 0.25, outBack, 1, 1.5, function(p)
 				--DISPLAY:SetWindowWidth(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
-			func {130.5, 1, function(x) return inverse(inOutCirc(x)) end, function(p)
-				DISPLAY:SetWindowPosition(-6000 * p, 12)
+			
+			func {128, 1.5, outCirc, 1, 0, function(p)
+				k = -k
+				DISPLAY:SetWindowPosition(320 * k * p, 12)
 			end}
-			func {131.5, 1, function(x) return inverse(inOutCirc(x)) end, function(p)
-				DISPLAY:SetWindowPosition(0, 12 + (6000 * p))
+			func {135, 0.25, outBack, 1.5, 1, function(p)
+				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
-			func {132.5, 1, function(x) return inverse(inOutCirc(x)) end, function(p)
-				DISPLAY:SetWindowPosition(0, 12 - (6000 * p))
+			func {145.5, 0.5, inExpo, 1, 1.5, function(p)
+				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
-			func {136, 1, outCirc, 1.5, 1, function(p)
-				--DISPLAY:SetWindowWidth(p)
+			func {146, 3.5, inQuad, function(p)
+				rand.seed(rand.float(-999, 999))
+				DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
+			end}
+			func {149.5, 0.5, outExpo, 1.6, 1, function(p)
+				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+			end}
+			func {153.5, 0.5, inExpo, 1, 1.5, function(p)
+				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+			end}
+			func {154, 3.5, inQuad, function(p)
+				rand.seed(rand.float(-999, 999))
+				DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
+			end}
+			func {157.5, 0.5, outExpo, 1.6, 1, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
 			func {161.5, 0.5, inExpo, 1, 1.5, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
+			k = -1
 			func {162, 3.5, inQuad, function(p)
 				rand.seed(rand.float(-999, 999))
-				DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
+				k = -k
+				DISPLAY:SetWindowPositionAndSize((w * 0.25 * 1.5 + (w * 0.25 * 0.05 * p)) * k + rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
 			end}
 			func {165.5, 0.5, outExpo, 1.6, 1, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
