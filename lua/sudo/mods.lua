@@ -308,6 +308,7 @@ return Def.ActorFrame {
 			That:zoom(p)
 		end}
 		
+		--[[
 		for beat = 114, 118 do
 			local x, y = rand.float(-scx * 0.75, scy * 0.75), rand.float(-scy * 0.75, scy * 0.75)
 			func {beat, 0.75, bounce, 0, 0.25, function(p)
@@ -341,6 +342,7 @@ return Def.ActorFrame {
 			That:xy(0, 0)
 			That:zoom(p)
 		end}
+		--]]
 
 		local movelist = {
 			{'down', 'right', 'up', 'down', 'left'},
@@ -348,10 +350,11 @@ return Def.ActorFrame {
 			{'right', 'left', 'down', 'up'},
 		}
 
-		set {113.5, 100, 'hidenoteflash'}
 		local index = 1
+		set {113.5, 100, 'hidenoteflash'}
 		for beat = 114, 118 do
 			move_that {beat, movelist[1][index]}
+			ease {beat - 1, 0.5, pop, -10000, 'tinyz', -3, 'screenrotx'}
 			index = index + 1
 		end
 		set {118.5, 0, 'hidenoteflash'}
@@ -359,6 +362,7 @@ return Def.ActorFrame {
 		index = 1
 		for beat = 121, 123 do
 			move_that {beat, movelist[2][index]}
+			ease {beat - 1, 0.5, pop, -10000, 'tinyz', -3, 'screenrotx'}
 			index = index + 1
 		end
 		set {123.5, 0, 'hidenoteflash'}
@@ -366,6 +370,7 @@ return Def.ActorFrame {
 		index = 1
 		for beat = 130, 133 do
 			move_that {beat, movelist[3][index]}
+			if beat < 133 then ease {beat, 0.5, pop, -10000, 'tinyz', -3, 'screenrotx'} end
 			index = index + 1
 		end
 		set {133.5, 0, 'hidenoteflash'}
@@ -463,7 +468,7 @@ return Def.ActorFrame {
 		ease {144.5, 1, inOutBack, 0, 'reverse3'}
 		ease {144.5, 1, flip(outCirc), -720, 'rotationy'}
 		ease {144.5, 1, inOutExpo, -200, 'tiny', 100, 'flip'}
-		ease {145, 0.5, outExpo, 0, 'stealth'}
+		ease {144.5, 1, inOutCirc, 0, 'stealth'}
 		ease {145, 1, inBack, 0, 'flip'}
 		ease {145.5, 1, inOutExpo, 0, 'tiny'}
 		

@@ -113,6 +113,7 @@ return Def.ActorFrame {
 			100, 'modtimer',
 			-100, 'straightholds',
 			100, 'dizzyholds',
+			100, 'halgun',
 			0, 'targetrotx',
 			0, 'targetroty',
 			0, 'targetrotz',
