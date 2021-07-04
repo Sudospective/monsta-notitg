@@ -12,6 +12,14 @@ return Def.ActorFrame {
 	end,
 	LoadCommand = function(self)
 		
+		definemod {
+			'glitchamp', 'glitchshiftx', 'glitchshifty',
+			function(n, x, y)
+				GlitchShader:GetShader():uniform1f('amount', n * 0.0002)
+				GlitchShader:GetShader():uniform2fv('shift', {x * 0.2, y * 0.2})
+			end
+		}
+
 		local function give_monsta_bass(beat)
 			func {beat + 0.25, 1, outExpo, -3, 0, function(p)
 				Give:zoom(0.25)
@@ -100,6 +108,7 @@ return Def.ActorFrame {
 				Up:hidden(0)
 				Lyrics:diffusealpha(0.75)
 			end}
+			ease {beat + 2, 2, flip(linear), 500, 'glitchamp', 20, 'glitchshiftx', 20, 'glitchshifty'}
 		end
 
 		local function move_that(t)
@@ -501,12 +510,14 @@ return Def.ActorFrame {
 		set {146, 0, 'euler'}
 
 		ease {145, 1, inExpo, 30, 'screenroty', 20, 'screenrotx', 100, 'mini', 100, 'movex', 180, 'wave', 8, 'xmod', 300, 'movey'}
+		ease {146, 4, tap, 100, 'glitchamp', 10, 'glitchshiftx', 10, 'glitchshifty'}
 		ease {146, 4, outCirc, 500, 'bumpy', 200, 'longholds', 10, 'screenroty'}
 		ease {146, 4, linear, -20, 'screenrotx'}
 		ease {149.5, 1, inOutExpo, 0, 'movey'}
 		ease {149, 2, inOutExpo, 0, 'screenroty', 0, 'screenrotx', 0, 'mini', 0, 'movex', 0, 'bumpy', 0, 'wave', 0, 'longholds', 2.5, 'xmod'}
 		
 		ease {153, 1, inExpo, -30, 'screenroty', 20, 'screenrotx', 100, 'mini', -100, 'movex', 180, 'wave', 8, 'xmod', 300, 'movey'}
+		ease {154, 4, tap, 100, 'glitchamp', 10, 'glitchshiftx', 10, 'glitchshifty'}
 		ease {154, 4, outCirc, 500, 'bumpy', 200, 'longholds', -10, 'screenroty'}
 		ease {154, 4, linear, -20, 'screenrotx'}
 		ease {157.5, 1, inOutExpo, 0, 'movey'}
@@ -515,6 +526,7 @@ return Def.ActorFrame {
 		ease {161, 1, inExpo, 20, 'rotationx', 100, 'mini', 180, 'wave', 8, 'xmod', 300, 'movey', -400, 'invert'}
 		ease {161, 1, inExpo, 30, 'rotationy', 50, 'movex', plr = 1}
 		ease {161, 1, inExpo, -30, 'rotationy', -50, 'movex', plr = 2}
+		ease {162, 4, tap, 100, 'glitchamp', 10, 'glitchshiftx', 10, 'glitchshifty'}
 		ease {162, 4, outCirc, 500, 'bumpy', 200, 'longholds'}
 		ease {162, 4, outCirc, 10, 'rotationy', plr = 1}
 		ease {162, 4, outCirc, -10, 'rotationy', plr = 2}
@@ -549,11 +561,11 @@ return Def.ActorFrame {
 		set {168, 100, 'euler'}
 		ease {168, 6, outCirc, 25, 'flip', -360, 'rotationx'}
 
-		ease {168, 4, flip(outElastic), 500, 'tipsy', -400, 'bumpy'}
-		ease {169.5, 4, flip(outElastic), -500, 'tipsy', 400, 'bumpy'}
-		ease {171, 4, flip(outElastic), 500, 'tipsy', -400, 'bumpy'}
-		ease {172.5, 4, flip(outElastic), -500, 'tipsy', 400, 'bumpy'}
-		ease {173, 4, flip(outElastic), 500, 'tipsy', -400, 'bumpy'}
+		ease {168, 4, flip(outElastic), 500, 'tipsy', -400, 'bumpy', 100, 'glitchshiftx', 25, 'screenposx'}
+		ease {169.5, 4, flip(outElastic), -500, 'tipsy', 400, 'bumpy', 100, 'glitchshiftx', -25, 'screenposx'}
+		ease {171, 4, flip(outElastic), 500, 'tipsy', -400, 'bumpy', 100, 'glitchshiftx', 25, 'screenposx'}
+		ease {172.5, 4, flip(outElastic), -500, 'tipsy', 400, 'bumpy', 100, 'glitchshiftx', -25, 'screenposx'}
+		ease {173, 4, flip(outElastic), 500, 'tipsy', -400, 'bumpy', 100, 'glitchshiftx', 25, 'screenposx'}
 		--ease {174, 4, flip(outElastic), 200, 'tipsy', -400, 'bumpy'}
 
 		ease {168, 3, bounce, -20, 'screenroty', -10, 'screenrotz'}
@@ -663,11 +675,44 @@ return Def.ActorFrame {
 				20, 'confusionyoffset3',
 			}
 		
-		ease {209, 1, inExpo, -30, 'screenroty', 20, 'screenrotx', 100, 'mini', 100, 'movex', 180, 'wave', 8, 'xmod', 300, 'movey'}
-		ease {210, 4, outCirc, 500, 'bumpy', 200, 'longholds', -10, 'screenroty'}
+		func {210, function()
+			ScreenPos:vibrate()
+			ScreenPos:effectmagnitude(5, 5, 0)
+		end}
+		func {214, function()
+			ScreenPos:stopeffect()
+		end}
+		func {218, function()
+			ScreenPos:vibrate()
+			ScreenPos:effectmagnitude(5, 5, 0)
+		end}
+		func {222, function()
+			ScreenPos:stopeffect()
+		end}
+
+		ease {209, 1, inExpo, 30, 'screenroty', 20, 'screenrotx', 100, 'mini', 100, 'movex', 180, 'wave', 8, 'xmod', 300, 'movey'}
+		ease {210, 4, tap, 100, 'glitchamp', 10, 'glitchshiftx', 10, 'glitchshifty'}
+		ease {210, 4, outCirc, 500, 'bumpy', 200, 'longholds', 10, 'screenroty'}
 		ease {210, 4, linear, -20, 'screenrotx'}
 		ease {213.5, 1, inOutExpo, 0, 'movey'}
 		ease {213, 2, inOutExpo, 0, 'screenroty', 0, 'screenrotx', 0, 'mini', 0, 'movex', 0, 'bumpy', 0, 'wave', 0, 'longholds', 2.5, 'xmod'}
+		
+		ease {217, 1, inExpo, -30, 'screenroty', 20, 'screenrotx', 100, 'mini', -100, 'movex', 180, 'wave', 8, 'xmod', 300, 'movey'}
+		ease {218, 4, tap, 100, 'glitchamp', 10, 'glitchshiftx', 10, 'glitchshifty'}
+		ease {218, 4, outCirc, 500, 'bumpy', 200, 'longholds', -10, 'screenroty'}
+		ease {218, 4, linear, -20, 'screenrotx'}
+		ease {221.5, 1, inOutExpo, 0, 'movey'}
+		ease {221, 2, inOutExpo, 0, 'screenroty', 0, 'screenrotx', 0, 'mini', 0, 'movex', 0, 'bumpy', 0, 'wave', 0, 'longholds', 2.5, 'xmod'}
+
+		ease {229.75, 0.5, inOutExpo, 300, 'movex0', 180 * math.pi/1.8, 'confusionoffset0'}
+		ease {230, 0.5, inOutExpo, -300, 'movex3', 180 * math.pi/1.8, 'confusionoffset3'}
+		ease {230.25, 0.5, inOutExpo, 100, 'movex1', 180 * math.pi/1.8, 'confusionoffset1'}
+		ease {230.5, 0.5, inOutExpo, -100, 'movex2', 180 * math.pi/1.8, 'confusionoffset2'}
+		ease {230.75, 0.5, inOutExpo, 0, 'movex0', 0 * math.pi/1.8, 'confusionoffset0'}
+		ease {231.25, 0.5, inOutExpo, 0, 'movex3', 0 * math.pi/1.8, 'confusionoffset3'}
+		ease {231.5, 0.5, inOutExpo, 0, 'movex1', 0 * math.pi/1.8, 'confusionoffset1'}
+		ease {231.75, 0.5, inOutExpo, 0, 'movex2', 0 * math.pi/1.8, 'confusionoffset2'}
+		
 
 		if GAMESTATE:PlayerDifficulty(0) == DIFFICULTY_EDIT then
 			local a = 0
@@ -703,9 +748,9 @@ return Def.ActorFrame {
 		
 		ease {264, 6, outCirc, 50, 'flip', -360, 'rotationx'}
 
-		ease {264, 4, flip(outElastic), 200, 'tipsy', -200, 'bumpy'}
-		ease {265.5, 4, flip(outElastic), -200, 'tipsy', 200, 'bumpy'}
-		ease {267, 4, flip(outElastic), 200, 'tipsy', -200, 'bumpy'}
+		ease {264, 4, flip(outElastic), 200, 'tipsy', -200, 'bumpy', 100, 'glitchshiftx', 25, 'screenposx'}
+		ease {265.5, 4, flip(outElastic), -200, 'tipsy', 200, 'bumpy', 100, 'glitchshiftx', -25, 'screenposx'}
+		ease {267, 4, flip(outElastic), 200, 'tipsy', -200, 'bumpy', 100, 'glitchshiftx', 25, 'screenposx'}
 		--ease {268.5, 4, flip(outElastic), -200, 'tipsy', 200, 'bumpy'}
 		--ease {270, 4, flip(outElastic), 200, 'tipsy', -200, 'bumpy'}
 		
@@ -720,11 +765,68 @@ return Def.ActorFrame {
 		if FUCK_EXE and window_mods then
 			local k = -1
 			local w, h = DISPLAY:GetWindowWidth(), DISPLAY:GetWindowHeight()
+			GlitchShader:hidden(1)
+			GAMESTATE:RecompileShadersOnResize(false)
+			func {0, 16, linear, 1, 2, function(p)
+				--DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+			end}
+			func {72, 6, linear, function(p)
+				rand.seed(rand.float(-999, 999))
+				DISPLAY:SetWindowPosition(rand.float(-10, 10) * p, 12 + rand.float(-10, 10) * p)
+			end}
+			func {77.85, function()
+				DISPLAY:SetBorderless(true)
+			end}
+			func {78, 0.5, flip(outBack), 1, 1.5, function(p)
+				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+			end}
+			func {79, 2, inOutExpo, 0, -1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {81, 2, inOutExpo, -1, 1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {83, 2, inOutExpo, 1, -1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {85, 2, inOutExpo, -1, 1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {87, 2, inOutExpo, 1, -1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {89, 2, inOutExpo, -1, 1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {91, 2, inOutExpo, 1, -1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {93, 2, inOutExpo, -1, 1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {95, 1, inExpo, 1, 0, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {96, 1.5, outCirc, 1, 0, function(p)
+				k = -k
+				DISPLAY:SetWindowPosition(320 * k * p, 12)
+			end}
+			func {97, 2, inOutExpo, 0, -1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {99, 2, inOutExpo, -1, 1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {101, 2, inOutExpo, 1, -1, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
+			func {103, 1, inExpo, -1, 0, function(p)
+				DISPLAY:SetWindowPosition(160 * p, 12)
+			end}
 			func {110, 0.25, outBack, 1, 1.5, function(p)
 				--DISPLAY:SetWindowWidth(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
-			
 			func {128, 1.5, outCirc, 1, 0, function(p)
 				k = -k
 				DISPLAY:SetWindowPosition(320 * k * p, 12)
@@ -732,27 +834,27 @@ return Def.ActorFrame {
 			func {135, 0.25, outBack, 1.5, 1, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
-			func {145.5, 0.5, inExpo, 1, 1.5, function(p)
+			func {145.75, 0.25, inExpo, 1, 1.5, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
 			func {146, 3.5, inQuad, function(p)
 				rand.seed(rand.float(-999, 999))
 				DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
 			end}
-			func {149.5, 0.5, outExpo, 1.6, 1, function(p)
+			func {149.75, 0.25, outExpo, 1.6, 1, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
-			func {153.5, 0.5, inExpo, 1, 1.5, function(p)
+			func {153.75, 0.25, inExpo, 1, 1.5, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
 			func {154, 3.5, inQuad, function(p)
 				rand.seed(rand.float(-999, 999))
 				DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
 			end}
-			func {157.5, 0.5, outExpo, 1.6, 1, function(p)
+			func {157.75, 0.25, outExpo, 1.6, 1, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
-			func {161.5, 0.5, inExpo, 1, 1.5, function(p)
+			func {161.75, 0.25, inExpo, 1, 1.5, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
 			k = -1
@@ -761,21 +863,7 @@ return Def.ActorFrame {
 				k = -k
 				DISPLAY:SetWindowPositionAndSize((w * 0.25 * 1.5 + (w * 0.25 * 0.05 * p)) * k + rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
 			end}
-			func {165.5, 0.5, outExpo, 1.6, 1, function(p)
-				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
-			end}
-			func {249.5, 0.5, inExpo, 1, 1.5, function(p)
-				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
-			end}
-			func {250, 4, inQuad, function(p)
-				rand.seed(rand.float(-999, 999))
-				DISPLAY:SetWindowPosition(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p)
-				DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
-			end}
-			func {253.5, 0.5, outExpo, 1.6, 1, function(p)
-				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
-			end}
-			func {272, 32, linear, 1, 0.5, function(p)
+			func {165.75, 0.25, outExpo, 1.6, 1, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
 			end}
 		end

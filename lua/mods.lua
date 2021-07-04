@@ -129,6 +129,10 @@ return Def.ActorFrame {
 
 		rand.seed(411)
 
+		aft(GlitchAFT)
+		sprite(GlitchShader)
+		aftsprite(GlitchAFT, GlitchShader)
+
     end,
 	Def.Quad {
 		Name = 'HideEvent',
@@ -154,5 +158,10 @@ return Def.ActorFrame {
 		},
 		loadfile('lua/sudo/mods.lua')(),
 		loadfile('lua/oats/mods.lua')(),
+	},
+	Def.ActorFrameTexture { Name = 'GlitchAFT' },
+	Def.Shader {
+		Name = 'GlitchShader',
+		Frag = 'notitg/glitch-lines.frag',
 	},
 }

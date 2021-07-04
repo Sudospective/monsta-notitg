@@ -29,9 +29,10 @@ void main()
 	uv.x += rand( vec2(uvn.y / 10.0, time / 10.0) ) * amount;
 	uv.x -= rand( vec2(uvn.y * 10.0, time * 10.0) ) * amount;
 
-	vec3 col;
+	vec4 col;
 	col.rg = texture2D( sampler0, img2tex(mod(uv + shift / resolution, 1.0)) ).rg;
 	col.gb = texture2D( sampler0, img2tex(mod(uv - shift / resolution, 1.0)) ).gb;
+	col.a = texture2D( sampler0, img2tex(uv) ).a;
 
-	gl_FragColor = vec4( col, 1.0 ) * color;
+	gl_FragColor = vec4( col ) * color;
 }

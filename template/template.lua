@@ -69,7 +69,7 @@ plr = {1, 2}
 function sprite(self)
 	if FUCK_EXE then
 		self:basezoomx(sw / dw)
-		self:basezoomy(-sh / dh)
+		self:basezoomy(-sw / dw)
 		self:x(scx)
 		self:y(scy)
 	else
