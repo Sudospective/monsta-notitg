@@ -2,11 +2,29 @@ xero()
 yes = (FUCK_EXE and 1) or true
 no = (FUCK_EXE and 0) or false
 
-function hide(a)
-    a:visible(no)
+function hide_actor(self)
+    if FUCK_EXE then
+		self:hidden(1)
+	else
+		self:visible(false)
+	end
 end
-function show(a)
-    a:visible(yes)
+function show_actor(self)
+    if FUCK_EXE then
+		self:hidden(0)
+	else
+		self:visible(true)
+	end
+end
+
+function aft_diffuse(self, a)
+	if not FUCK_EXE then
+		self:diffusealpha(a * 0.9)
+	else
+		local aftMult = 1.0
+		if DISPLAY:GetVendor() == 'nvidia' then aftMult = 0.9 end
+		self:diffusealpha(a * aftMult)
+	end
 end
 
 Blend = {

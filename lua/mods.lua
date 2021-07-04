@@ -127,13 +127,42 @@ return Def.ActorFrame {
 			0, 'realy',
 		}
 
+		self:fov(70)
+
 		rand.seed(411)
 
-		aft(GlitchAFT)
-		sprite(GlitchShader)
+		--aft(RecursiveAFT)
+		--sprite(RecursiveSprite)
+		aftsprite(RecursiveAFT, RecursiveSprite)
+
+		show_actor(RecursiveSprite)
+		aft_diffuse(RecursiveSprite, 0)
+
+		--aft(GlitchAFT)
+		--sprite(GlitchShader)
 		aftsprite(GlitchAFT, GlitchShader)
 
+		show_actor(GlitchShader)
+		
+		local lastFrameTime = self:GetEffectDelta()
+		local deltaTime = self:GetEffectDelta() - lastFrameTime
+		
+		func {0, 999, function()
+			deltaTime = deltaTime + self:GetEffectDelta()
+			if deltaTime > 0 then
+				RecursiveAFT:hidden(0)
+				deltaTime = deltaTime - (1 / 60)
+			else
+				RecursiveAFT:hidden(1)
+			end
+			lastFrameTime = self:GetEffectDelta()
+		end}
+
     end,
+
+	loadfile('lua/sudo/mods.lua')(),
+	loadfile('lua/oats/mods.lua')(),
+
 	Def.Quad {
 		Name = 'HideEvent',
 		InitCommand = function(self)
@@ -142,6 +171,10 @@ return Def.ActorFrame {
 			self:SetHeight(sh)
 			self:diffuse(0, 0, 0, 1)
 		end,
+	},
+	Def.Sprite {
+		Name = 'RecursiveSprite',
+		OnCommand = xero.sprite,
 	},
 	Def.ActorFrame {
 		Name = 'ScreenRot',
@@ -156,12 +189,22 @@ return Def.ActorFrame {
 			Def.ActorProxy { Name = 'PC[1]' },
 			Def.ActorProxy { Name = 'PC[2]' },
 		},
-		loadfile('lua/sudo/mods.lua')(),
-		loadfile('lua/oats/mods.lua')(),
 	},
-	Def.ActorFrameTexture { Name = 'GlitchAFT' },
+	Def.ActorFrameTexture {
+		Name = 'RecursiveAFT',
+		InitCommand = xero.aft,
+	},
+	Def.ActorFrameTexture {
+		Name = 'GlitchAFT',
+		InitCommand = xero.aft,
+	},
 	Def.Shader {
 		Name = 'GlitchShader',
 		Frag = 'notitg/glitch-lines.frag',
+		LoadCommand = function(self)
+			DISPLAY:ShaderFuck(self:GetShader())
+		end,
+		OnCommand = xero.sprite,
 	},
+	loadfile('lua/sudo/lyrics/actors.lua')(),
 }

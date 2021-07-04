@@ -41,7 +41,7 @@ function tap(t) return 3.5 * t * t * sqrt(1 - t) end
 function pulse(t) return t < .5 and tap(t * 2) or -pop(t * 2 - 1) end
 
 function spike(t) return exp(-10 * abs(2 * t - 1)) end
-function inverse(t) return t * t * (1 - t) * (1 - t) / (0.5 - ((t ~= 0.5 and t) or t + 0.01)) end
+function inverse(t) return (t >= 0.495 and t <= 0.505) and 1 or (t * t * (1 - t) * (1 - t) / (0.5 - t)) end
 
 popElastic = cache(function(damp)
 	return cache(function(count)

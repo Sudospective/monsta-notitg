@@ -5,7 +5,6 @@ window_mods = false
 return Def.ActorFrame {
 	Name = 'Sudo',
 	InitCommand = function(self)
-		self:fov(70)
 		if GAMESTATE:PlayerDifficulty(0) == DIFFICULTY_EDIT then
 			GAMESTATE:LaunchAttack(109.672, 2.482, 'dunno2')
 		end
@@ -106,7 +105,7 @@ return Def.ActorFrame {
 			func {beat + 2, function()
 				Kick:hidden(0)
 				Up:hidden(0)
-				Lyrics:diffusealpha(0.75)
+				Lyrics:diffusealpha(1)
 			end}
 			ease {beat + 2, 2, flip(linear), 500, 'glitchamp', 20, 'glitchshiftx', 20, 'glitchshifty'}
 		end
@@ -148,6 +147,27 @@ return Def.ActorFrame {
 				end
 			end
 		end
+
+		local function clamp(a, b, c)
+			return math.min(math.max(a, b), c)
+		end
+
+		local function aft_resize(aft, sprite, scale)
+			aft:SetWidth(DISPLAY:GetWindowWidth())
+			aft:SetHeight(DISPLAY:GetWindowHeight())
+			sprite:zoom(1 / scale)
+			aft:Recreate()
+			sprite:SetTexture(aft:GetTexture())
+		end
+
+		aftsprite(LyricsAFT, LyricsSprite)
+
+		-- Frame limited motion blur
+		func {0, 999, function()
+			local fps = DISPLAY:GetFPS()
+			local a = clamp(1 - math.sqrt(LyricsAFT:GetEffectDelta() * 30), 0, 0.9)
+			aft_diffuse(LyricsSprite, a)
+		end}
 	
 		func {0, function()
 			RemberHelper:hidden(1)
@@ -179,7 +199,7 @@ return Def.ActorFrame {
 		end}
 
 		func {16, function()
-			Lyrics:diffusealpha(0.75)
+			Lyrics:diffusealpha(1)
 			Give:zoom(0)
 			Me:zoom(0)
 			That:zoom(0)
@@ -290,7 +310,6 @@ return Def.ActorFrame {
 		how_she_go(78, -1)
 
 		set {78, 100, 'hidenoteflash', 50, 'waveoffset'}
-		--mirror {78, 249, 'movex'}
 		set {78, 0, 'rotationy', 0, 'targetroty', 0, 'drunk', 0, 'tipsy', 50, 'flip', 6, 'xmod', 200, 'wave', 1000, 'sudden', 100, 'dark'}
 		set {78, 50, 'reverse', -300, 'tiny', 100, 'stealth', 200, 'drawsize'}
 		ease {78, 0.5, linear, 0, 'stealth'}
@@ -299,11 +318,42 @@ return Def.ActorFrame {
 		ease {79, 1, linear, 2.5, 'xmod', 0, 'dark', 0, 'drawsize', 0, 'sudden'}
 		ease {79, 1, outBack, 0, 'targetrotz', 0, 'movey'}
 		ease {79, 1, bounce, 85, 'suddenoffset'}
-		--ease {79.5, 0.5, inCirc, 0, 'movex'}
 		ease {80, 0.25, flip(outExpo), 1000, 'drunk', 50, 'tipsy'}
 		set {80, 2.5, 'xmod', 0, 'flip', 0, 'tiny', 0, 'wave'}
 
 		kick_up(94)
+
+		ease {94.25, 0.25, inOutCirc, 1.25, 'xmod', 50, 'tiny'}
+		ease {94.75, 0.25, inOutCirc, 300, 'wave', 0, 'flip', -50, 'tiny'}
+		ease {95.25, 0.5, inOutExpo, 0, 'wave', 100, 'invert', 0, 'tiny'}
+		ease {95.5, 0.5, flip(outCirc), 200, 'tornado'}
+		mirror {95.75, 0.25, inExpo, 250 * (sw / 640), 'realx'}
+		add {95.75, 0.25, inExpo, -50, 'realx'}
+		ease {95.75, 0.25, inExpo, 1600, 'wave', -2000, 'tiny', 0, 'invert', 50, 'flip', 0, 'tornado', 0, 'sudden', 0, 'suddenoffset', 100, 'dark', -99, 'longholds'}
+		ease {95.5, 0.5, flip(inExpo), 360, 'rotationx', 360, 'rotationy'}
+		set {96, -500, 'tiny', 50, 'reverse', 50, 'flip', 2.5, 'xmod'}
+		ease {96, 1.5, flip(outCirc), -1000, 'tinyz'}
+		ease {96, 1, flip(outExpo), 1000, 'tandrunk', 00, 'tiny', -90, 'rotationx'}
+		ease {96, 1.5, inExpo, 0, 'reverse', 0, 'flip'}
+		ease {96, 1.5, flip(inQuad), 10, 'arrowpath'}
+		ease {96, 0.5, outExpo, 0, 'tiny', -600, 'tiny2', 1000, 'dizzy', 300, 'spiraly', -200, 'holdgirth', 100, 'holdstealth', -20, 'rotationy', -20, 'rotationx', -150, 'movez', 300, 'spiralx', 1000, 'spiralz', 10, 'stealth', 100, 'stealthpastreceptors', -100, 'movey', 5000, 'sudden', }
+		ease {96, 0.25, outExpo, 0.02, 'xmod', 400, 'zoomz', -500, 'tipsy'}
+
+		func {96.125, 0.125, outExpo, 0, 0.9, function(p)
+			for pn = 1, #PP do
+				P[pn]:vibrate()
+				P[pn]:effectmagnitude(50, 0, 0)
+			end
+			aft_diffuse(RecursiveSprite, p)
+		end}
+		func {97, 0.5, inExpo, 0.9, 0, function(p)
+			for pn = 1, #PP do
+				P[pn]:stopeffect()
+			end
+			aft_diffuse(RecursiveSprite, p)
+		end}
+
+		reset {97.25, 0.5, inOutExpo}
 
 		--[[ but it sounds like it says get fucked
 		func {94, function()
@@ -324,7 +374,7 @@ return Def.ActorFrame {
 
 		how_she_go(110, 1)
 
-		mirror {111, 1, inBack, 250, 'realx'}
+		mirror {111, 1, inBack, 250 * (sw / 640), 'realx'}
 		ease {112, 1, inBack, 50, 'flip', 360, 'targetrotz', 5, 'xmod', 150, 'wave', 75, 'waveoffset', -400, 'tiny', 200, 'sudden', 50, 'suddenoffset', 0, 'stealthtype', 50, 'reverse', 100, 'dark', 0, 'hidenoteflash'}
 		set {113, 100, 'boomerang'}
 		
@@ -423,26 +473,46 @@ return Def.ActorFrame {
 			ScreenPos:stopeffect()
 		end}
 		
+		
+		swap
+			{126, 0.25, outBack, 'ldru'}
+			{126.25, 0.25, outBack, 'dlru'}
+			{126.5, 0.25, outBack, 'rldu'}
+			{126.75, 0.25, outBack, 'rudl'}
+			{127, 0.25, outBack, 'ldur'}
+		
 		ease {126.75, 0.5, inOutCirc, 1, 'xmod', -50, 'tiny'}
-		ease {127.25, 0.5, inOutExpo, 100, 'tiny', 100, 'flip', -75, 'tornado'}
+		swap {127.25, 0.5, inOutExpo, 'rdul'}
+		ease {127.25, 0.5, inOutExpo, 100, 'tiny', -50, 'tornado'}
+		swap {127.75, 0.25, inExpo, 'ldur'}
 		ease {127.75, 0.25, inExpo, -2000, 'tiny', 50, 'flip', 0, 'tornado', 0, 'sudden', 0, 'suddenoffset', 100, 'dark', 100, 'hidenoteflash', -99, 'longholds'}
-		ease {127, 1, flip(inExpo), -360, 'rotationz'}
-		ease {128, 2, flip(inQuad), 5000, 'tinyz'}
+		ease {127.5, 0.5, flip(inExpo), -360, 'rotationz'}
+		ease {128, 2, flip(inCirc), 5000, 'tinyz'}
 		ease {128, 1, flip(outExpo), 1000, 'tandrunk'}
 		ease {129.5, 0.5, inExpo, 50, 'suddenoffset'}
 		set {128, -400, 'tiny', -25, 'reverse'}
-		ease {128, 2, inOutBack, -90 * math.pi/1.8, 'confusionoffset1'}
+		ease {127.5, 2.5, inOutBack, -90 * math.pi/1.8, 'confusionoffset1'}
 		ease {128, 2, inQuad, 50, 'reverse'}
 		ease {128, 2, outCirc, -200, 'holdgirth', 100, 'holdstealth'}
 		ease {128, 2, flip(outExpo), 100, 'hidden'}
 		ease {128, 2, flip(linear), 1000, 'xmod', -1500, 'tiny', 400, 'zoomz', -500, 'tipsy', -30, 'rotationx', 20, 'rotationy', 10, 'rotationz'}
 		set {129, 0, 'boomerang'}
 		ease {129, 1, inExpo, 5, 'xmod', 50, 'flip', 150, 'wave', 200, 'sudden', -400, 'tiny', 100, 'dark'}
-		set {130, 100, 'boomerang', 0, 'confusionoffset1', 0, 'bumpyx'}
+		set {130, 100, 'boomerang', 0, 'confusionoffset1', 0, 'bumpyx', 0, 'stealth'}
 		
-		set {133, 0, 'boomerang'}
+		set {133, 0, 'boomerang', 95, 'stealth0', 95, 'stealth3'}
 		ease {133, 0.5, outExpo, 2.5, 'xmod', 0, 'flip', 360, 'targetrotz', 0, 'reverse', 0, 'wave', 0, 'sudden', 0, 'tiny', 0, 'dark', 0, 'longholds', 0, 'holdgirth', 0, 'holdstealth'}
 		
+		for beat = 133, 133.95, 0.05 do
+			add {beat, 0.025, linear, -10, 'stealth0', -10, 'stealth3'}
+			add {beat + 0.025, 0.025, linear, 10, 'stealth0', 10, 'stealth3'}
+		end
+
+		swap {133, 0, instant, 'rdul'}
+		swap {133.75, 0.5, inOutBack, 'ldur'}
+		ease {134, 0.25, outCirc, 0, 'stealth0', 0, 'stealth3'}
+		ease {134, 0.25, pop, -100, 'tiny0', -100, 'tiny3'}
+
 		set {136, 100, 'euler'}
 
 		local k = -1
@@ -538,15 +608,12 @@ return Def.ActorFrame {
 			local dir1 = 'movey'
 			local dir2 = 'movex'
 			local amp = 1000
-			---[[
 			if beat >= 173 then dir1 = 'movex' dir2 = 'movey' amp = 1000
 			elseif beat >= 172 then dir1 = 'movey' dir2 = 'movex' amp = 1000
 			elseif beat >= 171 then dir1 = 'movex' dir2 = 'movey' amp = -1000
 			elseif beat >= 170 then dir1 = 'movey' dir2 = 'movex' amp = -1000
 			elseif beat >= 169 then dir1 = 'movex' dir2 = 'movey' amp = 1000
 			end
-			--]]
-			---[[
 			ease {beat - 0.25, 1, function(x) return inverse(inOutCirc(x)) end, amp, dir1..'0'}
 			add {beat - 0.25, 1, inOutCirc, amp * 0.1, 'reverse0'}
 			ease {beat, 1, function(x) return inverse(inOutCirc(x)) end, amp, dir1..'1'}
@@ -555,7 +622,6 @@ return Def.ActorFrame {
 			add {beat + 0.25, 1, inOutCirc, amp * 0.1, 'reverse2'}
 			ease {beat + 0.5, 1, function(x) return inverse(inOutCirc(x)) end, amp, dir1..'3'}
 			add {beat + 0.5, 1, inOutCirc, amp * 0.1, 'reverse3'}
-			--]]
 		end
 
 		set {168, 100, 'euler'}
@@ -689,6 +755,22 @@ return Def.ActorFrame {
 		func {222, function()
 			ScreenPos:stopeffect()
 		end}
+		
+		func {242, function()
+			ScreenPos:vibrate()
+			ScreenPos:effectmagnitude(5, 5, 0)
+		end}
+		func {246, function()
+			ScreenPos:stopeffect()
+		end}
+		
+		func {250, function()
+			ScreenPos:vibrate()
+			ScreenPos:effectmagnitude(5, 5, 0)
+		end}
+		func {254, function()
+			ScreenPos:stopeffect()
+		end}
 
 		ease {209, 1, inExpo, 30, 'screenroty', 20, 'screenrotx', 100, 'mini', 100, 'movex', 180, 'wave', 8, 'xmod', 300, 'movey'}
 		ease {210, 4, tap, 100, 'glitchamp', 10, 'glitchshiftx', 10, 'glitchshifty'}
@@ -704,14 +786,36 @@ return Def.ActorFrame {
 		ease {221.5, 1, inOutExpo, 0, 'movey'}
 		ease {221, 2, inOutExpo, 0, 'screenroty', 0, 'screenrotx', 0, 'mini', 0, 'movex', 0, 'bumpy', 0, 'wave', 0, 'longholds', 2.5, 'xmod'}
 
-		ease {229.75, 0.5, inOutExpo, 300, 'movex0', 180 * math.pi/1.8, 'confusionoffset0'}
-		ease {230, 0.5, inOutExpo, -300, 'movex3', 180 * math.pi/1.8, 'confusionoffset3'}
-		ease {230.25, 0.5, inOutExpo, 100, 'movex1', 180 * math.pi/1.8, 'confusionoffset1'}
-		ease {230.5, 0.5, inOutExpo, -100, 'movex2', 180 * math.pi/1.8, 'confusionoffset2'}
-		ease {230.75, 0.5, inOutExpo, 0, 'movex0', 0 * math.pi/1.8, 'confusionoffset0'}
-		ease {231.25, 0.5, inOutExpo, 0, 'movex3', 0 * math.pi/1.8, 'confusionoffset3'}
-		ease {231.5, 0.5, inOutExpo, 0, 'movex1', 0 * math.pi/1.8, 'confusionoffset1'}
-		ease {231.75, 0.5, inOutExpo, 0, 'movex2', 0 * math.pi/1.8, 'confusionoffset2'}
+		ease {229.75, 0.5, inOutCirc, 200, 'movex0', 90 * math.pi/1.8, 'confusionoffset0'}
+		ease {230, 0.5, inOutCirc, -200, 'movex2', -90 * math.pi/1.8, 'confusionoffset2'}
+		ease {230.25, 0.5, inOutCirc, 200, 'movex1', -90 * math.pi/1.8, 'confusionoffset1'}
+		ease {230.5, 0.5, inOutCirc, -200, 'movex3', 90 * math.pi/1.8, 'confusionoffset3'}
+		ease {230.75, 0.5, inOutCirc, 0, 'movex1', 0 * math.pi/1.8, 'confusionoffset1'}
+		ease {231.25, 0.5, inOutCirc, 0, 'movex3', 0 * math.pi/1.8, 'confusionoffset3'}
+		ease {231.5, 0.5, inOutCirc, 0, 'movex0', 0 * math.pi/1.8, 'confusionoffset0'}
+		ease {231.75, 0.5, inOutCirc, 0, 'movex2', 0 * math.pi/1.8, 'confusionoffset2'}
+		
+		ease {241, 1, inExpo, 20, 'rotationx', 100, 'mini', 180, 'wave', 8, 'xmod', 300, 'movey', -400, 'invert', 100, 'split', -600, 'movey2', -600, 'movey3'}
+		ease {241, 1, inExpo, 30, 'rotationy', 50, 'movex', plr = 1}
+		ease {241, 1, inExpo, -30, 'rotationy', -50, 'movex', plr = 2}
+		ease {242, 4, tap, 100, 'glitchamp', 10, 'glitchshiftx', 10, 'glitchshifty'}
+		ease {242, 4, outCirc, 500, 'bumpy', 200, 'longholds'}
+		ease {242, 4, outCirc, 10, 'rotationy', plr = 1}
+		ease {242, 4, outCirc, -10, 'rotationy', plr = 2}
+		ease {242, 4, linear, -20, 'rotationx'}
+		ease {245.5, 1, inOutExpo, 0, 'movey', 0, 'invert'}
+		ease {245, 2, inOutExpo, 0, 'rotationy', 0, 'rotationx', 0, 'mini', 0, 'movex', 0, 'bumpy', 0, 'wave', 0, 'longholds', 2.5, 'xmod', 0, 'split', 0, 'movey2', 0, 'movey3'}
+		
+		ease {249, 1, inExpo, 20, 'rotationx', 100, 'mini', 180, 'wave', 8, 'xmod', 300, 'movey', -400, 'invert', 100, 'alternate', -600, 'movey1', -600, 'movey3'}
+		ease {249, 1, inExpo, 30, 'rotationy', 50, 'movex', plr = 1}
+		ease {249, 1, inExpo, -30, 'rotationy', -50, 'movex', plr = 2}
+		ease {250, 4, tap, 100, 'glitchamp', 10, 'glitchshiftx', 10, 'glitchshifty'}
+		ease {250, 4, outCirc, 500, 'bumpy', 200, 'longholds'}
+		ease {250, 4, outCirc, 10, 'rotationy', plr = 1}
+		ease {250, 4, outCirc, -10, 'rotationy', plr = 2}
+		ease {250, 4, linear, -20, 'rotationx'}
+		ease {253.5, 1, inOutExpo, 0, 'movey', 0, 'invert'}
+		ease {253, 2, inOutExpo, 0, 'rotationy', 0, 'rotationx', 0, 'mini', 0, 'movex', 0, 'bumpy', 0, 'wave', 0, 'longholds', 2.5, 'xmod', 0, 'alternate', 0, 'movey1', 0, 'movey3'}
 		
 
 		if GAMESTATE:PlayerDifficulty(0) == DIFFICULTY_EDIT then
@@ -765,11 +869,10 @@ return Def.ActorFrame {
 		if FUCK_EXE and window_mods then
 			local k = -1
 			local w, h = DISPLAY:GetWindowWidth(), DISPLAY:GetWindowHeight()
-			GlitchShader:hidden(1)
+			--RecursiveSprite:hidden(1)
+			--GlitchShader:hidden(1)
+			--LyricsSprite:hidden(1)
 			GAMESTATE:RecompileShadersOnResize(false)
-			func {0, 16, linear, 1, 2, function(p)
-				--DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
-			end}
 			func {72, 6, linear, function(p)
 				rand.seed(rand.float(-999, 999))
 				DISPLAY:SetWindowPosition(rand.float(-10, 10) * p, 12 + rand.float(-10, 10) * p)
@@ -777,8 +880,11 @@ return Def.ActorFrame {
 			func {77.85, function()
 				DISPLAY:SetBorderless(true)
 			end}
-			func {78, 0.5, flip(outBack), 1, 1.5, function(p)
+			func {78, 0.5, flip(outBack), 1, 1.25, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				aft_resize(RecursiveAFT, RecursiveSprite, p)
+				aft_resize(GlitchAFT, GlitchShader, p)
+				aft_resize(LyricsAFT, LyricsSprite, p)
 			end}
 			func {79, 2, inOutExpo, 0, -1, function(p)
 				DISPLAY:SetWindowPosition(160 * p, 12)
@@ -809,7 +915,7 @@ return Def.ActorFrame {
 			end}
 			func {96, 1.5, outCirc, 1, 0, function(p)
 				k = -k
-				DISPLAY:SetWindowPosition(320 * k * p, 12)
+				DISPLAY:SetWindowPosition(160 * k * p, 12)
 			end}
 			func {97, 2, inOutExpo, 0, -1, function(p)
 				DISPLAY:SetWindowPosition(160 * p, 12)
@@ -824,216 +930,109 @@ return Def.ActorFrame {
 				DISPLAY:SetWindowPosition(160 * p, 12)
 			end}
 			func {110, 0.25, outBack, 1, 1.5, function(p)
-				--DISPLAY:SetWindowWidth(p)
-				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				--DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				--aft_resize(RecursiveAFT, RecursiveSprite, p)
+				--aft_resize(GlitchAFT, GlitchShader, p)
+				--aft_resize(LyricsAFT, LyricsSprite, p)
+				DISPLAY:SetWindowPosition(0, 12)
 			end}
 			func {128, 1.5, outCirc, 1, 0, function(p)
 				k = -k
-				DISPLAY:SetWindowPosition(320 * k * p, 12)
+				DISPLAY:SetWindowPosition(160 * k * p, 12)
 			end}
 			func {135, 0.25, outBack, 1.5, 1, function(p)
-				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				--DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				--aft_resize(RecursiveAFT, RecursiveSprite, p)
+				--aft_resize(GlitchAFT, GlitchShader, p)
+				--aft_resize(LyricsAFT, LyricsSprite, p)
+				DISPLAY:SetWindowPosition(0, 12)
 			end}
-			func {145.75, 0.25, inExpo, 1, 1.5, function(p)
-				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+			func {145.5, 0.5, inExpo, 1, 1.5, function(p)
+				--DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				--aft_resize(RecursiveAFT, RecursiveSprite, p)
+				--aft_resize(GlitchAFT, GlitchShader, p)
+				--aft_resize(LyricsAFT, LyricsSprite, p)
+				DISPLAY:SetWindowPosition(0, 12)
 			end}
 			func {146, 3.5, inQuad, function(p)
 				rand.seed(rand.float(-999, 999))
-				DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
+				--DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
+				DISPLAY:SetWindowPosition(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p)
 			end}
-			func {149.75, 0.25, outExpo, 1.6, 1, function(p)
-				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+			--[[
+			func {146, 3.5, inQuad, 1.5, 1.6, function(p)
+				aft_resize(RecursiveAFT, RecursiveSprite, p)
+				aft_resize(GlitchAFT, GlitchShader, p)
+				aft_resize(LyricsAFT, LyricsSprite, p)
 			end}
+			--]]
+			func {149.5, 0.5, outExpo, 1.6, 1, function(p)
+				--DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				--aft_resize(RecursiveAFT, RecursiveSprite, p)
+				--aft_resize(GlitchAFT, GlitchShader, p)
+				--aft_resize(LyricsAFT, LyricsSprite, p)
+				DISPLAY:SetWindowPosition(0, 12)
+			end}
+			--[[
 			func {153.75, 0.25, inExpo, 1, 1.5, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				aft_resize(RecursiveAFT, RecursiveSprite, p)
+				aft_resize(GlitchAFT, GlitchShader, p)
+				aft_resize(LyricsAFT, LyricsSprite, p)
 			end}
+			--]]
 			func {154, 3.5, inQuad, function(p)
 				rand.seed(rand.float(-999, 999))
-				DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
+				--DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
+				DISPLAY:SetWindowPosition(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p)
 			end}
-			func {157.75, 0.25, outExpo, 1.6, 1, function(p)
-				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+			--[[
+			func {154, 3.5, inQuad, 1.5, 1.6, function(p)
+				aft_resize(RecursiveAFT, RecursiveSprite, p)
+				aft_resize(GlitchAFT, GlitchShader, p)
+				aft_resize(LyricsAFT, LyricsSprite, p)
 			end}
+			--]]
+			func {157.5, 0.5, outExpo, 1.6, 1, function(p)
+				--DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				--aft_resize(RecursiveAFT, RecursiveSprite, p)
+				--aft_resize(GlitchAFT, GlitchShader, p)
+				--aft_resize(LyricsAFT, LyricsSprite, p)
+				DISPLAY:SetWindowPosition(0, 12)
+			end}
+			--[[
 			func {161.75, 0.25, inExpo, 1, 1.5, function(p)
 				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				aft_resize(RecursiveAFT, RecursiveSprite, p)
+				aft_resize(GlitchAFT, GlitchShader, p)
+				aft_resize(LyricsAFT, LyricsSprite, p)
 			end}
+			--]]
 			k = -1
+			func {162, 4, function()
+				k = -k
+			end}
 			func {162, 3.5, inQuad, function(p)
 				rand.seed(rand.float(-999, 999))
-				k = -k
-				DISPLAY:SetWindowPositionAndSize((w * 0.25 * 1.5 + (w * 0.25 * 0.05 * p)) * k + rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
+				--k = -k
+				--DISPLAY:SetWindowPositionAndSize(rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p, w * 1.5 + (w * 0.05 * p), h * 1.5 + (h * 0.05 * p))
+				DISPLAY:SetWindowPosition((160 * k) + rand.float(-40, 40) * p, 12 + rand.float(-40, 40) * p)
 			end}
-			func {165.75, 0.25, outExpo, 1.6, 1, function(p)
-				DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+			--[[
+			func {162, 3.5, inQuad, 1.5, 1.6, function(p)
+				aft_resize(RecursiveAFT, RecursiveSprite, p)
+				aft_resize(GlitchAFT, GlitchShader, p)
+				aft_resize(LyricsAFT, LyricsSprite, p)
+			end}
+			--]]
+			func {165.5, 0.5, outExpo, 1.6, 1, function(p)
+				--DISPLAY:SetWindowPositionAndSize(0, 12, w * p, h * p)
+				--aft_resize(RecursiveAFT, RecursiveSprite, p)
+				--aft_resize(GlitchAFT, GlitchShader, p)
+				--aft_resize(LyricsAFT, LyricsSprite, p)
+				DISPLAY:SetWindowPosition(0, 12)
 			end}
 		end
 
 	end,
-	Def.ActorFrame {
-		Name = 'Lyrics',
-		LoadCommand = function(self)
-			self:diffusealpha(0.75)
-			She:addy(-120)
-			Like:addy(120)
-		end,
-		Def.ActorFrame {
-			Def.Sprite {
-				Name = 'Give',
-				Texture = 'lua/sudo/lyrics/give.png',
-				OnCommand = function(self)
-					self:zoom(0)
-				end,
-			},
-			Def.Sprite {
-				Name = 'Me',
-				Texture = 'lua/sudo/lyrics/me.png',
-				OnCommand = function(self)
-					self:zoom(0)
-				end,
-			},
-			Def.Sprite {
-				Name = 'That',
-				Texture = 'lua/sudo/lyrics/that.png',
-				OnCommand = function(self)
-					self:zoom(0)
-				end,
-			},
-			Def.Sprite {
-				Name = 'Monsta',
-				Texture = 'lua/sudo/lyrics/monsta.png',
-				OnCommand = function(self)
-					self:zoom(0)
-				end,
-			},
-			Def.Sprite {
-				Name = 'Bass',
-				Texture = 'lua/sudo/lyrics/bass.png',
-				OnCommand = function(self)
-					self:zoom(0)
-				end,
-			},
-		},
-		Def.ActorFrame {
-			Def.Sprite {
-				Name = 'She',
-				Texture = 'lua/sudo/lyrics/she.png',
-				OnCommand = function(self)
-					self:hidden(1)
-					self:zoom(0.5)
-				end,
-			},
-			Def.Sprite {
-				Name = 'Go',
-				Texture = 'lua/sudo/lyrics/go.png',
-				OnCommand = function(self)
-					self:hidden(1)
-					self:zoom(0.5)
-				end,
-			},
-			Def.Sprite {
-				Name = 'Like',
-				Texture = 'lua/sudo/lyrics/like.png',
-				OnCommand = function(self)
-					self:hidden(1)
-					self:zoom(0.5)
-				end,
-			},
-			Def.Sprite {
-				Name = 'That2',
-				Texture = 'lua/sudo/lyrics/that.png',
-				OnCommand = function(self)
-					self:zoom(0)
-				end,
-			},
-		},
-		Def.ActorFrame {
-			Def.Sprite {
-				Name = 'Kick',
-				Texture = 'lua/sudo/lyrics/kick.png',
-				OnCommand = function(self)
-					self:hidden(1)
-					self:y((sh + 240))
-				end,
-			},
-			Def.Sprite {
-				Name = 'Up',
-				Texture = 'lua/sudo/lyrics/up.png',
-				OnCommand = function(self)
-					self:hidden(1)
-					self:y((sh + 240))
-				end,
-			},
-		},
-		Def.ActorFrame {
-			Name = 'NoPromise',
-			InitCommand = function(self)
-				self:zoom(0)
-			end,
-			Def.Sprite {
-				Name = 'No',
-				Texture = 'lua/sudo/lyrics/no.png',
-				OnCommand = function(self)
-					self:y(-300)
-				end,
-			},
-			Def.Sprite {
-				Name = 'Promise',
-				Texture = 'lua/sudo/lyrics/promise.png',
-				OnCommand = function(self)
-					self:y(-100)
-				end,
-			},
-			Def.Sprite {
-				Name = 'Getting',
-				Texture = 'lua/sudo/lyrics/getting.png',
-				OnCommand = function(self)
-					self:y(100)
-				end,
-			},
-			Def.Sprite {
-				Name = 'Em',
-				Texture = 'lua/sudo/lyrics/em.png',
-				OnCommand = function(self)
-					self:y(300)
-				end,
-			},
-			--[[ no really im super sure it says get fucked
-			Def.Sprite {
-				Name = 'Get',
-				Texture = 'lua/sudo/lyrics/get.png',
-				OnCommand = function(self)
-					self:zoom(0)
-				end,
-			},
-			Def.Sprite {
-				Name = 'Fucked',
-				Texture = 'lua/sudo/lyrics/fucked.png',
-				OnCommand = function(self)
-					self:zoom(0)
-				end,
-			},
-			--]]
-		},
-		Def.Sprite {
-			Name = 'Rember',
-			Texture = 'lua/sudo/assets/rember2.png',
-			InitCommand = function(self)
-				self:hidden(1)
-				self:diffusealpha(0)
-				--self:y(30)
-				self:zoom(0.25)
-			end,
-		},
-		Def.Quad {
-			Name = 'RemberHelper',
-			InitCommand = function(self)
-				self:SetWidth(sw)
-				self:SetHeight(32)
-				self:fadetop(0.5)
-				self:fadebottom(0.5)
-				self:y(-scx - 32)
-				self:diffuse(0, 1, 0, 1)
-			end,
-		}
-	},
 }
