@@ -39,6 +39,4 @@ function rand.seed(x)
 	state = x
 end
 
-return Def.Actor {
-    OnCommand = function() return rand end
-}
+return Def.Actor {}

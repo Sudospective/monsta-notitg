@@ -107,7 +107,7 @@ return Def.ActorFrame {
 				Up:hidden(0)
 				Lyrics:diffusealpha(1)
 			end}
-			ease {beat + 2, 2, flip(linear), 500, 'glitchamp', 20, 'glitchshiftx', 20, 'glitchshifty'}
+			ease {beat + 2, 2, flip(linear), 200, 'glitchamp', 20, 'glitchshiftx', 20, 'glitchshifty'}
 		end
 
 		local function move_that(t)
@@ -127,6 +127,7 @@ return Def.ActorFrame {
 				amp = scy
 			end
 			ease {beat - 0.5, 1, function(x) return inverse(inOutCirc(x)) end, amp, mod}
+
 			if FUCK_EXE and window_mods then
 				if dir == 'left' then
 					func {beat - 0.5, 1, function(x) return inverse(inOutCirc(x)) end, function(p)
@@ -309,6 +310,7 @@ return Def.ActorFrame {
 
 		how_she_go(78, -1)
 
+		-- dont ask me why i did it this way okay leave me alone
 		set {78, 100, 'hidenoteflash', 50, 'waveoffset'}
 		set {78, 0, 'rotationy', 0, 'targetroty', 0, 'drunk', 0, 'tipsy', 50, 'flip', 6, 'xmod', 200, 'wave', 1000, 'sudden', 100, 'dark'}
 		set {78, 50, 'reverse', -300, 'tiny', 100, 'stealth', 200, 'drawsize'}
@@ -819,6 +821,10 @@ return Def.ActorFrame {
 		
 
 		if GAMESTATE:PlayerDifficulty(0) == DIFFICULTY_EDIT then
+			func {255.5, function()
+				RemberHelper:hidden(0)
+				RemberHelper:diffusealpha(1)
+			end}
 			local a = 0
 			for beat = 256, 260, 2 do
 				a = a + 0.25
