@@ -163,11 +163,22 @@ return Def.ActorFrame {
 
 		aftsprite(LyricsAFT, LyricsSprite)
 
+
 		-- Frame limited motion blur
-		func {0, 999, function()
+		func {0.02, 999, function()
 			local fps = DISPLAY:GetFPS()
 			local a = clamp(1 - math.sqrt(LyricsAFT:GetEffectDelta() * 30), 0, 0.9)
 			aft_diffuse(LyricsSprite, a)
+		end}
+
+		
+		for pn = 1, #PP do
+			PP[pn]:hidden(1)
+		end
+		func {0, function()
+			for pn = 1, #PP do
+				PP[pn]:hidden(0)
+			end
 		end}
 	
 		func {0, function()
@@ -227,15 +238,6 @@ return Def.ActorFrame {
 				Bass:x((-20 * p))
 			end}
 		end
-
-		for pn = 1, #PP do
-			PP[pn]:hidden(1)
-		end
-		func {0, function()
-			for pn = 1, #PP do
-				PP[pn]:hidden(0)
-			end
-		end}
 
 		ease {0, 8, flip(outExpo), 100, 'dark', 200, 'tiny', -400, 'drunk', 400, 'tipsy', 100, 'stealth', 100, 'disablemines'}
 

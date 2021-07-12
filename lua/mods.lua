@@ -131,17 +131,11 @@ return Def.ActorFrame {
 
 		rand.seed(411)
 
-		--aft(RecursiveAFT)
-		--sprite(RecursiveSprite)
 		aftsprite(RecursiveAFT, RecursiveSprite)
-
 		show_actor(RecursiveSprite)
 		aft_diffuse(RecursiveSprite, 0)
 
-		--aft(GlitchAFT)
-		--sprite(GlitchShader)
 		aftsprite(GlitchAFT, GlitchShader)
-
 		show_actor(GlitchShader)
 		
 		local lastFrameTime = self:GetEffectDelta()
@@ -201,9 +195,6 @@ return Def.ActorFrame {
 	Def.Shader {
 		Name = 'GlitchShader',
 		Frag = 'notitg/glitch-lines.frag',
-		LoadCommand = function(self)
-			DISPLAY:ShaderFuck(self:GetShader())
-		end,
 		OnCommand = xero.sprite,
 	},
 	loadfile('lua/sudo/lyrics/actors.lua')(),

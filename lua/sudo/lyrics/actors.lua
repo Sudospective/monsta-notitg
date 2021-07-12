@@ -170,6 +170,9 @@ return Def.ActorFrame {
 	},
 	Def.Sprite {
 		Name = 'LyricsSprite',
+		InitCommand = function(self)
+			self:diffusealpha(0)
+		end,
 		OnCommand = xero.sprite,
 	},
 	Def.ActorFrameTexture {
